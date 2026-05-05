@@ -17,8 +17,29 @@
     </header>
     <main>
         <h1>Account Profile</h1>
-        <p>Welcome to your Account Profile page.</p>
+        <div id="profile-content">
+            <p>Loading...</p>
+        </div>
     </main>
     <script src="bundle.js"></script>
+    <script>
+        fetch('/api/auth/session')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                var content = document.getElementById('profile-content');
+                if (data.loggedIn) {
+                    content.innerHTML = '<p><strong>Name:</strong> ' + data.user.name + '</p>' +
+                        '<p><strong>Email:</strong> ' + data.user.email + '</p>' +
+                        '<button id="logout-btn" style="padding: 10px 20px; background-color: #333; color: #fff; border: none; cursor: pointer; margin-top: 10px;">Logout</button>';
+                    document.getElementById('logout-btn').addEventListener('click', function() {
+                        fetch('/api/auth/logout', { method: 'POST' })
+                            .then(function() { window.location.href = '/login'; });
+                    });
+                } else {
+                    content.innerHTML = '<p>You are not logged in.</p>' +
+                        '<a href="/login" style="display: inline-block; padding: 10px 20px; background-color: #333; color: #fff; text-decoration: none;">Login</a>';
+                }
+            });
+    </script>
 </body>
 </html>

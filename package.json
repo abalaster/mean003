@@ -18,6 +18,8 @@
   "author": "Aaron Balaster",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express-session": "^1.19.0",
     "mongodb": "^7.2.0",
     "whatwg-fetch": "1.0.0"
   },

@@ -3,8 +3,10 @@ import path from 'path';
 import open from 'open';
 import webpack from 'webpack';
 import config from '../webpack.config.dev';
+import session from 'express-session';
 import { connectToDatabase } from '../src/db/connection';
 import userRoutes from '../src/routes/userRoutes';
+import authRoutes from '../src/routes/authRoutes';
 
 /*eslint-disable no-console*/
 const port = 3000;
@@ -17,7 +19,14 @@ app.use(require('webpack-dev-middleware')(compiler, {
 }));
 
 app.use(express.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'mean003-dev-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+}));
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/index.html'));
@@ -37,6 +46,10 @@ app.get('/products', function (req, res) {
 
 app.get('/profile', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/profile.html'));
+});
+
+app.get('/login', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/login.html'));
 });
 
 app.get('/nav.css', function (req, res) {

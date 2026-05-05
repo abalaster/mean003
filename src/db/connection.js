@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 const defaultUri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-const defaultDbName = process.env.MONGODB_DB || 'mean003';
+const defaultDbName = process.env.MONGODB_DB || 'sample_mflix';
 
 let client = null;
 let db = null;

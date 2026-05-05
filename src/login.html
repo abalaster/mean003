@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="nav.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/blog">Blog</a>
+            <a href="/products">Products and Services</a>
+            <a href="/profile" class="profile-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Account Profile</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Login</h1>
+        <div id="login-message" style="color: red; margin-bottom: 10px;"></div>
+        <form id="login-form">
+            <div style="margin-bottom: 10px;">
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required style="width: 300px; padding: 8px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required style="width: 300px; padding: 8px;">
+            </div>
+            <button type="submit" style="padding: 10px 20px; background-color: #333; color: #fff; border: none; cursor: pointer;">Login</button>
+        </form>
+    </main>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var message = document.getElementById('login-message');
+
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, password: password })
+            })
+            .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+            .then(function(result) {
+                if (result.ok) {
+                    window.location.href = '/profile';
+                } else {
+                    message.textContent = result.data.error || 'Login failed';
+                }
+            })
+            .catch(function() {
+                message.textContent = 'An error occurred. Please try again.';
+            });
+        });
+    </script>
+</body>
+</html>
