@@ -45,7 +45,9 @@
             .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
             .then(function(result) {
                 if (result.ok) {
-                    window.location.href = '/profile';
+                    var params = new URLSearchParams(window.location.search);
+                    var redirect = params.get('redirect') || '/profile';
+                    window.location.href = redirect;
                 } else {
                     message.textContent = result.data.error || 'Login failed';
                 }

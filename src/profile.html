@@ -151,8 +151,7 @@
                             .then(function() { window.location.href = '/login'; });
                     });
                 } else {
-                    content.innerHTML = '<p>You are not logged in.</p>' +
-                        '<a href="/login" style="display: inline-block; padding: 10px 20px; background-color: #333; color: #fff; text-decoration: none;">Login</a>';
+                    window.location.href = '/login?redirect=/profile';
                 }
             });
     </script>
