@@ -30,6 +30,10 @@ app.get('/products', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/products.html'));
 });
 
+app.get('/profile', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/profile.html'));
+});
+
 app.get('/nav.css', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/nav.css'));
 });
