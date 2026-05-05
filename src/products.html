@@ -17,8 +17,141 @@
     </header>
     <main>
         <h1>Products and Services</h1>
-        <p>Welcome to our Products and Services page.</p>
+        <p>Movie catalog from sample_mflix — <span id="movie-count"></span> titles, sorted alphabetically.</p>
+        <div id="movie-list"></div>
+        <div id="loading" style="text-align: center; padding: 20px; display: none;">
+            <p>Loading more movies...</p>
+        </div>
+        <div id="end-message" style="text-align: center; padding: 20px; display: none;">
+            <p>All movies loaded.</p>
+        </div>
     </main>
+    <style>
+        .movie-card {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #fff;
+        }
+        .movie-card img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background: #eee;
+        }
+        .movie-info h3 {
+            margin: 0 0 6px 0;
+            font-size: 1.1em;
+        }
+        .movie-info p {
+            margin: 3px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .movie-meta {
+            font-size: 0.85em;
+            color: #888;
+        }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+    </style>
     <script src="bundle.js"></script>
+    <script>
+        (function () {
+            var currentPage = 1;
+            var loading = false;
+            var allLoaded = false;
+            var movieList = document.getElementById('movie-list');
+            var loadingEl = document.getElementById('loading');
+            var endMessage = document.getElementById('end-message');
+            var countEl = document.getElementById('movie-count');
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                var div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function renderMovie(movie) {
+                var card = document.createElement('div');
+                card.className = 'movie-card';
+
+                var posterSrc = movie.poster || '';
+                var imgHtml = posterSrc
+                    ? '<img src="' + escapeHtml(posterSrc) + '" alt="' + escapeHtml(movie.title) + '">'
+                    : '<img src="" alt="No poster" style="background:#ccc;">';
+
+                var genres = (movie.genres || []).join(', ') || 'N/A';
+                var year = movie.year || 'N/A';
+                var rated = movie.rated || 'N/A';
+                var runtime = movie.runtime ? movie.runtime + ' min' : 'N/A';
+                var imdbRating = (movie.imdb && movie.imdb.rating) ? movie.imdb.rating + '/10' : 'N/A';
+                var plot = movie.plot || 'No description available.';
+
+                card.innerHTML = imgHtml +
+                    '<div class="movie-info">' +
+                        '<h3>' + escapeHtml(movie.title) + '</h3>' +
+                        '<p class="movie-meta">' + escapeHtml(String(year)) + ' &middot; ' + escapeHtml(rated) + ' &middot; ' + escapeHtml(runtime) + ' &middot; IMDb: ' + escapeHtml(imdbRating) + '</p>' +
+                        '<p class="movie-meta">Genres: ' + escapeHtml(genres) + '</p>' +
+                        '<p>' + escapeHtml(plot) + '</p>' +
+                    '</div>';
+
+                return card;
+            }
+
+            function loadMovies() {
+                if (loading || allLoaded) return;
+                loading = true;
+                loadingEl.style.display = 'block';
+
+                fetch('/api/movies?page=' + currentPage + '&limit=20')
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (currentPage === 1 && data.total) {
+                            countEl.textContent = data.total.toLocaleString();
+                        }
+
+                        data.movies.forEach(function (movie) {
+                            movieList.appendChild(renderMovie(movie));
+                        });
+
+                        loadingEl.style.display = 'none';
+                        loading = false;
+
+                        if (currentPage >= data.totalPages || data.movies.length === 0) {
+                            allLoaded = true;
+                            endMessage.style.display = 'block';
+                        } else {
+                            currentPage++;
+                        }
+                    })
+                    .catch(function () {
+                        loadingEl.style.display = 'none';
+                        loading = false;
+                    });
+            }
+
+            window.addEventListener('scroll', function () {
+                if (allLoaded || loading) return;
+                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                var windowHeight = window.innerHeight;
+                var docHeight = document.documentElement.scrollHeight;
+                if (scrollTop + windowHeight >= docHeight - 300) {
+                    loadMovies();
+                }
+            });
+
+            loadMovies();
+        })();
+    </script>
 </body>
 </html>

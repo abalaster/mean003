@@ -7,6 +7,7 @@ import session from 'express-session';
 import { connectToDatabase } from '../src/db/connection';
 import userRoutes from '../src/routes/userRoutes';
 import authRoutes from '../src/routes/authRoutes';
+import movieRoutes from '../src/routes/movieRoutes';
 
 /*eslint-disable no-console*/
 const port = 3000;
@@ -27,6 +28,7 @@ app.use(session({
 }));
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/movies', movieRoutes);
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/index.html'));
