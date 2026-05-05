@@ -24,6 +24,19 @@ nav a:hover {
   background-color: #555;
 }
 
+nav a.profile-link {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+nav a.profile-link svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
 main {
   padding: 20px;
 }
