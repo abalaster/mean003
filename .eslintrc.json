@@ -6,7 +6,7 @@
     "plugin:import/warnings" // same
   ],
   "parserOptions": { // defines the version of js we are using.
-    "ecmaVersion": 7,
+    "ecmaVersion": 8,
     "sourceType": "module" // declaring that we are using standard js modules
   },
   "env": {  // tells eslint to expect certain global variables. Many more are supported
