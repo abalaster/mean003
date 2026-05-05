@@ -1,0 +1,20 @@
+{
+  "root": true, // Tells eslint that it shouldn't look for any other eslint conf files in any parent directories.
+  "extends": [
+    "eslint:recommended", // eslint recommended rules. Enables many rules and warnings.
+    "plugin:import/errors", // if we use an invalid import statement, we will find out as soon as we save.
+    "plugin:import/warnings" // same
+  ],
+  "parserOptions": { // defines the version of js we are using.
+    "ecmaVersion": 7,
+    "sourceType": "module" // declaring that we are using standard js modules
+  },
+  "env": {  // tells eslint to expect certain global variables. Many more are supported
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "rules": { // Here is where we can override eslint's recommended/standard rules.
+    "no-console": 1 // example rule override. 1-warning, 2-error, 0-off.
+  }
+}

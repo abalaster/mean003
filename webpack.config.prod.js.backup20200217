@@ -1,0 +1,47 @@
+const path = require('path');
+const HtmlWebpackPlugin= require('html-webpack-plugin');
+
+// import path from 'path';
+// import webpack from 'webpack';
+// import HtmlWebpackPlugin from 'html-webpack-plugin';
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+module.exports = {
+  mode: "production",
+  devtool: 'source-map', // a number of dev tools to consider. Compilation speed vs quality. Higher quality takes longer.
+  entry: [ // Can pass an array of entrypoints. A good way to inject middleware for hot reloading. Keeping it simple for now.
+    path.resolve(__dirname, 'src/index') // __dirname is a node keyname that provides the full path.
+  ],
+  output: { // This is where it should create it's bundle. Note: Does not actually create a file. Creates a bundle in memory and then serves it to the browser. Need a path to simulate the existence of a file.
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
+  module: { // Need to tell Webpack the filetypes we want it to handle. Webpack calls them 'loaders'.
+    rules: [
+      {test: /\.js$/, exclude: /node_modules/, use: [ {loader: 'babel-loader'}]},
+      {test: /\.css$/, use: [ {loader: 'style-loader'}, {loader: 'css-loader'}]}, // could add other handlers here for SASS, LESS, images and more
+    ],
+  },
+  // optimization: {
+  //   minimizer: [new UglifyJsPlugin()]
+  // },
+  watch: true,
+  target: 'web',
+  plugins: [
+          // Create HTML file that includes reference to bundled JS.
+          new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            inject: true
+          })
+  ]
+};
+  //
+  // plugins: [
+  //         //Eliminate duplicate packages when generating bundle
+  //         // new webpack.optimize.DedupePlugin(),
+  //
+  //         // Minify JS
+  //         // new webpack.optimization.UglifyJsPlugin(),
+  // ], // we will use some plugins to enhance Webpack. eg hot-reloading, catching errors, linting styles.
+  //
