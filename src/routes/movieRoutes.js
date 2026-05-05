@@ -41,4 +41,22 @@ router.get('/', async function (req, res) {
   }
 });
 
+router.get('/letter/:letter', async function (req, res) {
+  try {
+    const letter = req.params.letter.toUpperCase();
+    const db = getDb();
+    var offset;
+    if (letter === '#') {
+      offset = 0;
+    } else {
+      offset = await db.collection('movies').countDocuments({
+        title: { $lt: letter }
+      });
+    }
+    res.json({ letter: letter, offset: offset });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

@@ -26,7 +26,70 @@
             <p>All movies loaded.</p>
         </div>
     </main>
+    <div id="alpha-nav">
+        <a href="#" data-letter="#">#</a>
+        <a href="#" data-letter="A">A</a>
+        <a href="#" data-letter="B">B</a>
+        <a href="#" data-letter="C">C</a>
+        <a href="#" data-letter="D">D</a>
+        <a href="#" data-letter="E">E</a>
+        <a href="#" data-letter="F">F</a>
+        <a href="#" data-letter="G">G</a>
+        <a href="#" data-letter="H">H</a>
+        <a href="#" data-letter="I">I</a>
+        <a href="#" data-letter="J">J</a>
+        <a href="#" data-letter="K">K</a>
+        <a href="#" data-letter="L">L</a>
+        <a href="#" data-letter="M">M</a>
+        <a href="#" data-letter="N">N</a>
+        <a href="#" data-letter="O">O</a>
+        <a href="#" data-letter="P">P</a>
+        <a href="#" data-letter="Q">Q</a>
+        <a href="#" data-letter="R">R</a>
+        <a href="#" data-letter="S">S</a>
+        <a href="#" data-letter="T">T</a>
+        <a href="#" data-letter="U">U</a>
+        <a href="#" data-letter="V">V</a>
+        <a href="#" data-letter="W">W</a>
+        <a href="#" data-letter="X">X</a>
+        <a href="#" data-letter="Y">Y</a>
+        <a href="#" data-letter="Z">Z</a>
+    </div>
     <style>
+        #alpha-nav {
+            position: fixed;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid #ccc;
+            border-radius: 14px;
+            padding: 4px 2px;
+            z-index: 100;
+        }
+        #alpha-nav a {
+            display: block;
+            width: 24px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: #555;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        #alpha-nav a:hover {
+            background: #333;
+            color: #fff;
+        }
+        #alpha-nav a.active {
+            background: #2a7a2a;
+            color: #fff;
+        }
         .movie-card {
             display: flex;
             border: 1px solid #ddd;
@@ -60,7 +123,7 @@
         main {
             max-width: 800px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 50px 0 15px;
         }
     </style>
     <script src="bundle.js"></script>
@@ -151,6 +214,29 @@
             });
 
             loadMovies();
+
+            document.getElementById('alpha-nav').addEventListener('click', function (e) {
+                if (e.target.tagName !== 'A') return;
+                e.preventDefault();
+                var letter = e.target.getAttribute('data-letter');
+                if (!letter) return;
+
+                var links = document.querySelectorAll('#alpha-nav a');
+                links.forEach(function (link) { link.classList.remove('active'); });
+                e.target.classList.add('active');
+
+                fetch('/api/movies/letter/' + encodeURIComponent(letter))
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        movieList.innerHTML = '';
+                        endMessage.style.display = 'none';
+                        allLoaded = false;
+                        currentPage = Math.floor(data.offset / 20) + 1;
+                        loading = false;
+                        loadMovies();
+                        window.scrollTo(0, 0);
+                    });
+            });
         })();
     </script>
 </body>
