@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "babel-node buildScripts/startMessage.js",
     "start": "npm-run-all --parallel open:src lint:watch test:watch",
-    "open:src": "babel-node buildScripts/srcServer.js",
+    "open:src": "cross-env NODE_OPTIONS=--openssl-legacy-provider babel-node buildScripts/srcServer.js",
     "lint": "esw webpack.config.* src buildScripts --color",
     "lint:watch": "npm run lint -- --watch",
     "localtunnel": "lt-win --port 3000 --subdomain abalaster",

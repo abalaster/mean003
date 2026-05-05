@@ -14,8 +14,10 @@ A JavaScript development environment starter kit built on the MEAN stack toolcha
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v10 or higher recommended)
+- [Node.js](https://nodejs.org/) (v10 or higher)
 - npm (comes with Node.js)
+
+> **Note:** On Node.js 17+, the `--openssl-legacy-provider` flag is required for Webpack 4. This is already configured in the npm scripts.
 
 ## Getting Started
 
