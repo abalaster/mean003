@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Profile</title>
+    <link rel="stylesheet" href="nav.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/blog">Blog</a>
+            <a href="/products">Products and Services</a>
+            <a href="/profile" class="profile-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Account Profile</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Account Profile</h1>
+        <div id="profile-content">
+            <p>Loading...</p>
+        </div>
+    </main>
+    <style>
+        .profile-form label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+        .profile-form input {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .profile-form fieldset {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px 15px;
+            margin-top: 15px;
+        }
+        .profile-form legend {
+            font-weight: bold;
+            padding: 0 5px;
+        }
+        .profile-form fieldset label {
+            margin-top: 8px;
+        }
+        .profile-form fieldset input {
+            width: 280px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            border-radius: 4px;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        .btn-save { background-color: #2a7a2a; }
+        .btn-save:hover { background-color: #236e23; }
+        .btn-logout { background-color: #333; }
+        .btn-logout:hover { background-color: #555; }
+        #save-message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="bundle.js"></script>
+    <script>
+        fetch('/api/auth/session')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                var content = document.getElementById('profile-content');
+                if (data.loggedIn) {
+                    content.innerHTML =
+                        '<p><strong>Name:</strong> <span id="profile-name"></span></p>' +
+                        '<form id="profile-form" class="profile-form">' +
+                            '<label for="email">Primary Email:</label>' +
+                            '<input type="email" id="email" name="email">' +
+                            '<label for="secondaryEmail">Secondary Email:</label>' +
+                            '<input type="email" id="secondaryEmail" name="secondaryEmail">' +
+                            '<label for="phone">Phone Number:</label>' +
+                            '<input type="tel" id="phone" name="phone">' +
+                            '<fieldset>' +
+                                '<legend>Mailing Address</legend>' +
+                                '<label for="street">Street:</label>' +
+                                '<input type="text" id="street" name="street">' +
+                                '<label for="city">City:</label>' +
+                                '<input type="text" id="city" name="city">' +
+                                '<label for="state">State:</label>' +
+                                '<input type="text" id="state" name="state">' +
+                                '<label for="zip">Zip Code:</label>' +
+                                '<input type="text" id="zip" name="zip">' +
+                            '</fieldset>' +
+                            '<button type="submit" class="btn btn-save">Save Changes</button>' +
+                            '<button type="button" id="logout-btn" class="btn btn-logout">Logout</button>' +
+                        '</form>' +
+                        '<div id="save-message"></div>';
+
+                    fetch('/api/auth/profile')
+                        .then(function(res) { return res.json(); })
+                        .then(function(user) {
+                            document.getElementById('profile-name').textContent = user.name || '';
+                            document.getElementById('email').value = user.email || '';
+                            document.getElementById('secondaryEmail').value = user.secondaryEmail || '';
+                            document.getElementById('phone').value = user.phone || '';
+                            if (user.mailingAddress) {
+                                document.getElementById('street').value = user.mailingAddress.street || '';
+                                document.getElementById('city').value = user.mailingAddress.city || '';
+                                document.getElementById('state').value = user.mailingAddress.state || '';
+                                document.getElementById('zip').value = user.mailingAddress.zip || '';
+                            }
+                        });
+
+                    document.getElementById('profile-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        var msg = document.getElementById('save-message');
+                        msg.textContent = 'Saving...';
+                        msg.style.color = '#333';
+                        fetch('/api/auth/profile', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: document.getElementById('email').value,
+                                secondaryEmail: document.getElementById('secondaryEmail').value,
+                                phone: document.getElementById('phone').value,
+                                mailingAddress: {
+                                    street: document.getElementById('street').value,
+                                    city: document.getElementById('city').value,
+                                    state: document.getElementById('state').value,
+                                    zip: document.getElementById('zip').value
+                                }
+                            })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function(result) {
+                            msg.textContent = result.message || 'Saved!';
+                            msg.style.color = '#2a7a2a';
+                        })
+                        .catch(function() {
+                            msg.textContent = 'Error saving changes.';
+                            msg.style.color = 'red';
+                        });
+                    });
+
+                    document.getElementById('logout-btn').addEventListener('click', function() {
+                        fetch('/api/auth/logout', { method: 'POST' })
+                            .then(function() { window.location.href = '/login'; });
+                    });
+                } else {
+                    window.location.href = '/login?redirect=/profile';
+                }
+            });
+    </script>
+</body>
+</html>
