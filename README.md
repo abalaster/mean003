@@ -27,7 +27,19 @@ A JavaScript development environment starter kit built on the MEAN stack toolcha
    npm install
    ```
 
-2. **Start the development server:**
+2. **Set the MongoDB connection string:**
+
+   ```bash
+   export MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>/?appName=Cluster0"
+   ```
+
+3. **Seed user passwords** (first time only — sets all sample_mflix user passwords to `password`):
+
+   ```bash
+   npx babel-node buildScripts/seedPasswords.js
+   ```
+
+4. **Start the development server:**
 
    ```bash
    npm start
@@ -49,6 +61,17 @@ A JavaScript development environment starter kit built on the MEAN stack toolcha
    ```bash
    npm test
    ```
+
+## Login Credentials
+
+After running the password seed script, all 186 users in `sample_mflix.users` share the password `password`. You can log in with any user's email, for example:
+
+| Email | Name | Password |
+|---|---|---|
+| `sean_bean@gameofthron.es` | Ned Stark | `password` |
+| `lena_headey@gameofthron.es` | Cersei Lannister | `password` |
+| `emilia_clarke@gameofthron.es` | Daenerys Targaryen | `password` |
+| `kit_harington@gameofthron.es` | Jon Snow | `password` |
 
 ## Available Scripts
 
