@@ -18,6 +18,22 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../src/index.html'));
 });
 
+app.get('/about', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/about.html'));
+});
+
+app.get('/blog', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/blog.html'));
+});
+
+app.get('/products', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/products.html'));
+});
+
+app.get('/nav.css', function (req, res) {
+  res.sendFile(path.join(__dirname, '../src/nav.css'));
+});
+
 app.listen(port, function(err) {
   if (err) {
     console.log(err);
